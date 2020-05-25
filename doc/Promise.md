@@ -473,4 +473,4 @@ Object.assign(SimplePromise, {
 
 这样, 一个简单的 `promise` 就实现了~
 
-完整代码: [传送门]()
+完整代码: [传送门](https://github.com/BadmasterY/docs/blob/master/test/promise.js)
