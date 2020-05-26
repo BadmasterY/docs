@@ -37,7 +37,7 @@ function SimplePromise(executor) {
 
 现在, 也可以通过 `new SimplePromise(() => {});` 的形式创建自己的 `promise` 了！恭喜🎉！那么本章就结束了~(**误**!)
 
-### 状态和值
+### 2. 状态和值
 一个 `Promise` 有以下几种状态:
 - `pending`: 初始状态, 既不是成功, 也不是失败状态。
 - `fulfilled`: 意味着操作成功完成。
@@ -421,7 +421,7 @@ Object.assign(SimplePromise, {
             const length = iterable.length;
 
             const results = [];
-            let count;
+            let count = 0;
 
             for (let i = 0; i < length; i++) {
                 this.resolve(iterable[i]).then(result => {
@@ -440,7 +440,7 @@ Object.assign(SimplePromise, {
             const length = iterable.length;
 
             const results = [];
-            let count;
+            let count = 0;
 
             for (let i = 0; i < length; i++) {
                 this.resolve(iterable[i]).then(result => {
@@ -472,5 +472,52 @@ Object.assign(SimplePromise, {
 ```
 
 这样, 一个简单的 `promise` 就实现了~
+
+### 7. 差异
+不过, 这样实现的 `SimplePromise` 还是存在问题的, 仔细观察以下输出:
+```js
+// Promise 版本
+setTimeout(function () { console.log(4) }, 0);
+new Promise(function (resolve) {
+    console.log(1)
+    for (var i = 0; i < 10000; i++) {
+        i == 9999 && resolve()
+    }
+    console.log(2)
+}).then(function () { console.log(5) });
+console.log(3);
+// => 1, 2, 3, 5, 4
+
+// SimplePromise 版本
+setTimeout(function () { console.log(4) }, 0);
+new SimplePromise(function (resolve) {
+    console.log(1)
+    for (var i = 0; i < 10000; i++) {
+        i == 9999 && resolve()
+    }
+    console.log(2)
+}).then(function () { console.log(5) });
+console.log(3);
+// => 1, 2, 5, 3, 4
+```
+
+为什么会这样? 本着深入探究的原则, 翻看了一下[Promises/A+规范](https://www.ituring.com.cn/article/66566), 发现了这样一段译者注:
+
+> 实践中要确保 `onFulfilled` 和 `onRejected` 方法异步执行，且应该在 `then` 方法被调用的那一轮事件循环之后的新执行栈中执行。
+
+所以, 在浏览器的实现中, `.then` 的注册应该是异步的, 而在 `SimplePromise` 的实现中, 它是同步的, 这才导致 `5` 在 `3` 之前执行。
+
+思路:
+- 可以简单的通过设置超时为 `0ms` 的定时器包裹 `.then` 代码实现异步调用。
+- 不过总觉得不太对......问题不大, 先尝试一下。
+
+输出结果:
+```
+1, 2, 3, 4, 5
+```
+
+🤔❓❓❓❓(半疯)
+
+然后通过神奇的搜索引擎找到了这样的一篇文章: [Promise的队列与setTimeout的队列有何关联？](https://www.zhihu.com/question/36972010), 具体原因直接查看这篇文章即可, 就不再赘述了, 同时, `SimplePromise` 的实现也就到此为止了(实在是想不出, 如何在浏览器中控制队列......)。
 
 完整代码: [传送门](https://github.com/BadmasterY/docs/blob/master/test/promise.js)

@@ -68,7 +68,7 @@ Object.assign(SimplePromise, {
             const length = iterable.length;
 
             const results = [];
-            let count;
+            let count = 0;
 
             for (let i = 0; i < length; i++) {
                 this.resolve(iterable[i]).then(result => {
@@ -87,7 +87,7 @@ Object.assign(SimplePromise, {
             const length = iterable.length;
 
             const results = [];
-            let count;
+            let count = 0;
 
             for (let i = 0; i < length; i++) {
                 this.resolve(iterable[i]).then(result => {
