@@ -6,10 +6,16 @@
     <title>Test html</title>
 </head>
 <body>
+    <button id="promiseBtn">TestPromise</button>
+    <a href="./canvas.html" target="_blank" rel="noopener noreferrer">canvas</a>
     <script src="./promise.js"></script>
     <script>
         window.onload = function() {
-            console.log(SimplePromise);
+            const promiseBtn = document.getElementById('promiseBtn');
+
+            promiseBtn.addEventListener('click', () => {
+                console.log(SimplePromise);
+            }, false);
         }
     </script>
 </body>
