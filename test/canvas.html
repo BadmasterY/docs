@@ -1,14 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canvas Demo</title>
 </head>
-<body>
-    <canvas id="my-canvas" width="300" height="300">
+
+<body style="text-align: center;">
+    <canvas id="my-canvas" width="300" height="300" style="box-shadow: 0px 0px 7px #ddd; border-radius: 3px;">
         Your browser does not support canvas, please use modern browser!
     </canvas>
+    <div style="text-align: center;">
+        <button id="draw-house">house</button>
+        <button id="draw-rect">rect</button>
+        <button id="draw-triangle">triangle</button>
+    </div>
     <script src="./canvas.js"></script>
+    <script src="./drawRect.js"></script>
+    <script src="./drawTriangle.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const houseBtn = document.getElementById('draw-house');
+            const rectBtn = document.getElementById('draw-rect');
+            const triangleBtn = document.getElementById('draw-triangle');
+
+            houseBtn.addEventListener('click', drawHouse, false);
+            rectBtn.addEventListener('click', drawRect, false);
+            triangleBtn.addEventListener('click', drawTriangle, false);
+        }, false);
+    </script>
 </body>
+
 </html>

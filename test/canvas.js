@@ -1,7 +1,10 @@
-window.onload = function () {
+function drawHouse () {
     const canvas = document.getElementById('my-canvas');
     if (canvas.getContext) {
         const ctx = canvas.getContext('2d');
+        // clear
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         // Set line width
         ctx.lineWidth = 10;
 
