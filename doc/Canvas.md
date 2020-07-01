@@ -1,4 +1,4 @@
-## RE: Canvas 
+## Relearn Canvas 
 > 本章会穿插少量的 `WebGL` 知识, 但不会做过多解释, 感兴趣的可以等待后续 `WebGL`相关的章节。  
 > `BTW`: 在学习之前, 您需要具备一些基本的 `HTML` 与 `JavaScript` 知识。  
 
@@ -222,11 +222,11 @@ if (canvas.getContext) {
     // clear
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. craete path
+    // 1. create path
     ctx.beginPath();
     // 2. move to start point
     ctx.moveTo(75, 50);
-    // 3. crate lines
+    // 3. create lines
     ctx.lineTo(100, 75);
     ctx.lineTo(100, 25);
     // 4. close path
@@ -241,8 +241,11 @@ if (canvas.getContext) {
 
 > 源码传送门: [drawTriangle.js](../test/drawTriangle.js)
 
+其中第四步 `closePath()` 不是必须的, 使用 `fill()` 时会自动闭合所有路径, 但是 `stroke()` 并不会。
+
 ##### 绘制顺序:
-> 实际上, `moveTo()` 与 `lineTo()` 函数不会绘制任何东西, 这里只是方便理解!
+> 实际上, `moveTo()`、`closePath()` 与 `lineTo()` 函数不会绘制任何东西, 这里只是方便理解!  
+> 不相信? 注释掉 `ctx.fill()` 试试。
 
 ![Triangle绘制顺序](../images/canvas/triangle.gif)
 
@@ -256,3 +259,144 @@ if (canvas.getContext) {
 
 ![无从下笔的亚子](../images/canvas/moveTo.gif)
 
+当 `canvas` 初始化或者 `beginPath()` 调用后, 通常会使用 `moveTo()` 函数设置起点。同时也能够使用 `moveTo()` 绘制一些不连续的路径。
+
+##### 例子 —— 笑脸
+```js
+const canvas = document.getElementById('my-canvas');
+if (canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+    // clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. start path
+    ctx.beginPath();
+    // ctx.moveTo(75, 75);
+    // 2. face
+    ctx.arc(75, 75, 50, 0, Math.PI * 2);
+    // ctx.arc(75, 75, 50, Math.PI / 6, Math.PI * 2);
+    // 3. move
+    ctx.moveTo(110, 75);
+    // 4. mouse
+    ctx.arc(75, 75, 35, 0, Math.PI);
+    // 5. move
+    ctx.moveTo(65, 65);
+    // 6. left eye
+    ctx.arc(60, 65, 5, 0, Math.PI * 2);
+    ctx.moveTo(95, 65);
+    // 7. right eye
+    ctx.arc(90, 65, 5, 0, Math.PI * 2);
+    // 8. close path
+    ctx.closePath();
+    // 9. stroke
+    ctx.stroke();
+
+} else {
+    // fallback codes
+}
+```
+
+> 源码传送门: [drawSmilingFace.js](../test/drawSmilingFace.js)
+
+为什么第一次不需要 `moveTo()`? 因为会根据 `arc(75, 75, 50, 0, Math.PI * 2)` 这段函数自动调整至 `(125, 75)` 位置, 也就是 `(75 + 50, 75)` 位置。  
+就这? 当然不是, 还需要根据初始角度进行计算, 重新推导为 `(75 + cos(0) * 50, 75 + sin(0) * 50)`。  
+这样依旧是不够的, 还要根据顺时针还是逆时针进行计算。
+
+不信? 打开注释掉的 `ctx.moveTo(75, 75)` 或者替换为 `ctx.arc(75, 75, 50, Math.PI / 6, Math.PI * 2);` 看看。
+
+##### 绘制顺序:
+![smilingFace绘制顺序](../images/canvas/smilingFace.gif)
+
+> 论**数学**的重要性:  
+> 三角函数忘干净了怎么办, 快去找[度娘]((https://baike.baidu.com/item/%E4%B8%89%E8%A7%92%E5%87%BD%E6%95%B0/1652457?fr=aladdin))或者 [wiki](https://en.wikipedia.org/wiki/Trigonometric_functions)。
+
+> 题外话: 如果想要学好 `WebGL` 玩转着色器语言(`GLSL`) 的话, 还是赶紧想想高数概率论啥的忘干净没。
+
+##### 线🧵
+> 创建的都是直线, 曲线请使用圆弧。
+
+绘制直线, 需要用到的方法 `lineTo()`。
+
+该方法有两个参数: `x` 和 `y`, 代表坐标系中直线结束的点。开始点和之前的绘制路径有关, 之前路径的结束点就是接下来的开始点, 开始点也可以通过 `moveTo()` 函数改变。
+
+##### 例子 —— 两个三角形
+```js
+const canvas = document.getElementById('my-canvas');
+if (canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+    // clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 1;
+
+    // fill triangle
+    ctx.beginPath();
+    ctx.moveTo(25, 25);
+    ctx.lineTo(105, 25);
+    ctx.lineTo(25, 105);
+    ctx.closePath();
+    ctx.fill();
+
+    // stroke triangle
+    ctx.beginPath();
+    ctx.moveTo(125, 125);
+    ctx.lineTo(125, 45);
+    ctx.lineTo(45, 125);
+    ctx.closePath(); // It cannot be omitted
+    ctx.stroke();
+} else {
+    // fallback codes
+}
+```
+
+> 源码传送门: [drawTriangle_2.js](../test/drawTriangle_2.js)
+
+##### 绘制顺序:
+![two triangles绘制顺序](../images/canvas/triangle_2.gif)
+
+##### 圆弧
+绘制圆弧或者圆, 使用 `arc()` 方法。当然也可以使用 `arcTo()`, 不过这个方法的实现并不是那么的可靠, 不做赘述, 感兴趣的可以自己玩一玩。
+
+这里详细介绍一下 `arc()` 方法, 该方法有六个参数: `x`, `y` 为绘制圆弧所在圆上的圆心坐标。`radius` 为半径。`startAngle` 以及 `endAngle` 参数用弧度定义了开始以及结束的弧度。这些都是以 `x` 轴为基准。参数 `anticlockwise` 为一个布尔值。默认为 `false`, 顺时针方向。当为 `true` 时，是逆时针方向。
+
+> `startAngle` 与 `endAngle` 都是弧度, 而非角度。弧度 = (Math.PI / 180) * 角度。  
+> 也可以理解为 `Math.PI` 是 `180°`。
+
+###### 例子 —— 一组圆弧
+```js
+const canvas = document.getElementById('my-canvas');
+if (canvas.getContext) {
+  const ctx = canvas.getContext('2d');
+
+  ctx.lineWidth = 1;
+
+  // clear
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // create 4 x 3 arc
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 3; j++) {
+      ctx.beginPath();
+      // center point position
+      const x = 25 + j * 50;
+      const y = 25 + i * 50;
+      // radius
+      const radius = 20;
+      const startAngle = 0;
+      const endAngle = Math.PI + (Math.PI * j) / 2;
+      // event or odd
+      const anticlockwise = i % 2 == 0 ? false : true;
+
+      // create arc
+      ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+
+      if (i > 1) {
+        ctx.fill();
+      } else {
+        ctx.stroke();
+      }
+    }
+  }
+} else {
+  // fallback codes
+}
+```

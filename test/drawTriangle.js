@@ -4,6 +4,7 @@ function drawTriangle() {
         const ctx = canvas.getContext('2d');
         // clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 1;
 
         // 1. craete path
         ctx.beginPath();

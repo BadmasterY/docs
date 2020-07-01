@@ -2,6 +2,9 @@ function drawRect() {
     const canvas = document.getElementById('my-canvas');
     if (canvas.getContext) {
         const ctx = canvas.getContext('2d');
+
+        ctx.lineWidth = 1;
+
         // clear
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 

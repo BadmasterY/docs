@@ -15,19 +15,31 @@
         <button id="draw-house">house</button>
         <button id="draw-rect">rect</button>
         <button id="draw-triangle">triangle</button>
+        <button id="draw-smiling-face">smiling face</button>
+        <button id="draw-triangle-2">two triangle</button>
+        <button id="draw-arc">arc</button>
     </div>
     <script src="./canvas.js"></script>
     <script src="./drawRect.js"></script>
     <script src="./drawTriangle.js"></script>
+    <script src="./drawSmilingFace.js"></script>
+    <script src="./drawTriangle_2.js"></script>
+    <script src="./drawArc.js"></script>
     <script>
         window.addEventListener('load', () => {
             const houseBtn = document.getElementById('draw-house');
             const rectBtn = document.getElementById('draw-rect');
             const triangleBtn = document.getElementById('draw-triangle');
+            const smilingFaceBtn = document.getElementById('draw-smiling-face');
+            const twoTriangleBtn = document.getElementById('draw-triangle-2');
+            const arcBtn = document.getElementById('draw-arc');
 
             houseBtn.addEventListener('click', drawHouse, false);
             rectBtn.addEventListener('click', drawRect, false);
             triangleBtn.addEventListener('click', drawTriangle, false);
+            smilingFaceBtn.addEventListener('click', drawSmilingFace, false);
+            twoTriangleBtn.addEventListener('click', drawTriangle_2, false);
+            arcBtn.addEventListener('click', drawArc, false);
         }, false);
     </script>
 </body>
