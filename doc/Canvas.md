@@ -400,3 +400,401 @@ if (canvas.getContext) {
   // fallback codes
 }
 ```
+> 源码传送门: [drawArc.js](../test/drawArc.js)
+
+##### 绘制顺序
+![一组圆弧顺序]()
+
+#### 4. Path2D
+`Path2D` 用来声明路径, 这是一个 `Canvas 2D API`, 生成的路径将由 `CanvasRenderingContext2D` 对象使用(就是上述例子中的 `ctx`)。`CanvasRenderingContext2D` 接口的**路径方法**也存在于 `Path2D` 这个接口中, 允许在 `canvas` 中根据需要创建可以保留并重用的路径。
+
+##### 构造函数
+`Path2D()`:  
+可以通过 `new Path2D()` 的形式创建一个空的 `Path2D` 对象。
+
+参数:
+- `path`(可选): 当调用另一个 `Path2D` 对象时, 会创建一个 `path` 变量的拷贝。
+- `d`(可选): 当调用 `SVG path` 数据构成的字符串时, 会根据描述创建一个新的路径。
+
+##### 方法
+- `addPath(path [, transform])`: 添加一条新路径到对当前路径。`path` 为需要添加的 `Path2D` 路径, 可选的 `transform` 是一个变换矩阵([DOMMatrix](https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix)), 作用于加入的路径(技术上是一个 `DOMMatrixInit` 对象)。
+- `closePath()`: 与 `CanvasRenderingContext2D` 对象的 `closePath()` 方法一致。
+- `moveTo(x, y)`: 与 `CanvasRenderingContext2D` 对象的 `moveTo()` 方法一致。
+- `lineTo(x, y)`: 与 `CanvasRenderingContext2D` 对象的 `lineTo()` 方法一致。
+- `bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)`: 与 `CanvasRenderingContext2D` 对象的 `bezierCurveTo()` 方法一致。
+- `quadraticCurveTo(cpx, cpy, x, y)`: 与 `CanvasRenderingContext2D` 对象的 `quadraticCurveTo()` 方法一致。
+- `arc(x, y, radius, startAngle, endAngle, anticlockwise)`: 与 `CanvasRenderingContext2D` 对象的 `arc()` 方法一致。
+- `arcTo(x1, y1, x2, y2, radius)`: 与 `CanvasRenderingContext2D` 对象的 `arcTo()` 方法一致。
+- `ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)`: 与 `CanvasRenderingContext2D` 对象的 `ellipse()` 方法一致。
+- `rect(x, y, width, height)`: 与 `CanvasRenderingContext2D` 对象的 `rect()` 方法一致。
+
+##### 例子:
+```js
+const canvas = document.getElementById('my-canvas');
+if (canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+    // clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 1;
+
+    const rectangle = new Path2D();
+    rectangle.rect(10, 10, 50, 50);
+
+    const circle = new Path2D();
+    circle.moveTo(125, 35);
+    circle.arc(100, 35, 25, 0, 2 * Math.PI);
+
+    ctx.stroke(rectangle);
+    ctx.fill(circle);
+} else {
+    // fallback codes
+}
+```
+
+> 源码传送门: [path2d.js](../test/path2d.js)
+
+##### 绘制顺序:
+
+
+##### 使用 SVG path 绘制
+这是一段简单的代码片段, 使用 `SVG path data` 创建一个 `Path2D` 路径。路径将会移动到点 `(M10 10)`, 然后向右侧水平移动80个点 `(h 80)`, 然后向下80个点 `(v 80)`, 然后向左80个点 `(h -80)`, 最后回到起始点 `(z)`。
+
+##### 例子
+```js
+const canvas = document.getElementById('my-canvas');
+if (canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+
+    // clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.lineWidth = 1;
+
+    var p = new Path2D("M10 10 h 80 v 80 h -80 Z");
+    ctx.fill(p);
+} else {
+    // fallback codes
+}
+```
+
+> 源码传送门: [drawSVG.js](../test/drawSVG.js)
+
+### 二、色彩
+到目前为止, 只看到过绘制内容的方法。如果想要给图形上色, 需要用到两个重要的属性: `fillStyle` 和 `strokeStyle`。
+
+**⚠️注意**: 一旦设置了 `strokeStyle` 或者 `fillStyle` 的值, 那么这个新值就会成为新绘制的图形的默认值。如果要给每个图形绘制不同的颜色, 需要重新设置 `fillStyle` 或 `strokeStyle` 的值。
+
+#### 1. fillStyle
+设置图形的填充颜色。
+##### 语法
+```
+ctx.fillStyle = color;
+ctx.fillStyle = gradient;
+ctx.fillStyle = pattern;
+```
+
+##### 选项
+> 这里优先演示 `color` 选项, 其他两个选项后续陆续介绍与演示。
+
+- `color`: `DOMString` 字符串, 被转换成 `CSS <color>` 颜色值, 如 `white`, `#fff`, `rgb(255, 255, 255)` 或者 `rgba(255, 255, 255, 1)`。默认为 `#000`(黑色)。
+- `gradient`: `CanvasGradient` 对象, 线性或者径向(放射性)渐变。
+- `pattern`: `CanvasPattern` 对象(可重复图像)。
+
+其中, `color` 应当是符合[CSS3颜色值标准](https://www.w3.org/TR/css-color-3/)的有效字符串。
+
+##### 例子
+```js
+for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 6; j++) {
+        ctx.fillStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
+            Math.floor(255 - 42.5 * j) + ',0)';
+        ctx.fillRect(j * 25, i * 25, 25, 25);
+    }
+}
+```
+
+> 源码传送门: [fillStyle.js](../test/fillStyle.js)
+
+##### 绘制顺序
+> 这只是一个近似案例的模拟, 由于原 `demo` 绘制成 `gif` 过于复杂, 抱歉(就是懒, 来打我啊)。
+
+![fillStyle绘制顺序]()
+
+#### 2. strokeStyle
+设置图形轮廓的颜色。
+##### 语法
+```
+ctx.strokeStyle = color;
+ctx.strokeStyle = gradient;
+ctx.strokeStyle = pattern;
+```
+
+##### 选项
+> 这里优先演示 `color` 选项, 其他两个选项后续陆续介绍与演示。
+
+- `color`: `DOMString` 字符串, 被转换成 `CSS <color>` 颜色值, 如 `white`, `#fff`, `rgb(255, 255, 255)` 或者 `rgba(255, 255, 255, 1)`。默认为 `#000`(黑色)。
+- `gradient`: `CanvasGradient` 对象, 线性或者径向(放射性)渐变。
+- `pattern`: `CanvasPattern` 对象(可重复图像)。
+
+##### 例子
+```js
+ctx.lineWidth = 25;
+
+for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 6; j++) {
+        ctx.strokeStyle = 'rgb(' + Math.floor(255 - 42.5 * i) + ',' +
+            Math.floor(255 - 42.5 * j) + ',0)';
+        const x = j * 25 + 12.5;
+        const y = i * 25;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + 25);
+        ctx.closePath();
+        ctx.stroke();
+    }
+}
+```
+
+> 源码传送门: [strokeStyle.js](../test/strokeStyle.js)
+
+##### 绘制顺序
+![strokeStyle绘制顺序]()
+
+#### 3. 透明度
+除了可以绘制实色图形, 还可以用 `canvas` 来绘制半透明的图形。通过设置 `globalAlpha` 属性或者使用一个半透明颜色作为轮廓或填充的样式(`rgba(0, 0, 0, 0.1)`)。
+
+数值的范围从 `0.0`(完全透明)到 `1.0`(完全不透明)。
+
+##### 语法
+```
+ctx.globalAlpha = value;
+```
+
+##### 选项
+`value`:  
+数字在 `0.0`(完全透明)和 `1.0`(完全不透明)之间。 默认值是 `1.0`。 如果数值不在范围内, `包括Infinity` 和 `NaN`, 无法赋值, 并且 `globalAlpha` 会保持原有的数值。
+
+##### 例子
+```js
+// draw rect
+ctx.fillRect(25, 25, 100, 100);
+
+ctx.globalAlpha = .5;
+ctx.fillStyle = '#fff';
+
+ctx.fillRect(50, 50, 30, 30);
+```
+
+> 源码传送门: [globalAlpha.js](../test/globalAlpha.js)
+
+##### 绘制顺序
+![globalAlpha绘制顺序]()
+
+### 三. 线型
+`canvas` 提供了一些方法和属性控制如何绘制线。
+
+> 📒记笔记时间到了~
+
+##### 属性
+- `ctx.lineWitdh`: 线的宽度。默认 `1.0`。 `0`、负数、`Infinity` 和 `NaN` 会被忽略。
+- `ctx.lineCap`: 线末端的类型。 默认为: `butt`(方形), 其他可选值: `round`(圆形), `square`(方形, 但是增加了一个宽度和线段相同, 高度是线段宽度一半的矩形区域)。
+- `ctx.lineJoin`: 定义两线相交拐点的类型。默认为: `miter`(通过延伸相连部分的外边缘, 使其相交于一点, 形成一个额外的菱形区域。这个设置可以通过 `miterLimit` 属性看到效果), 其他可选值: `round`(通过填充一个额外的, 圆心在相连部分末端的扇形, 绘制拐角的形状。圆角的半径是线段的宽度), `bevel`(在相连部分的末端填充一个额外的以三角形为底的区域, 每个部分都有各自独立的矩形拐角)。
+- `ctx.miterLimit`: 斜接面限制比例。默认 `10`。 `0`、负数、`Infinity` 和 `NaN` 都会被忽略。
+- `ctx.lineDashOffset`: 描述在哪里开始绘制线段。偏移量是 `float` 精度的数字。 初始值为 0.0。
+
+##### 方法
+- `ctx.setLineDash(segments)`: 填充线时使用虚线模式。 它使用一组值来指定描述模式的线和间隙的交替长度。`segments` 是一个Array数组。一组描述交替绘制线段和间距(坐标空间单位)长度的数字。如果数组元素的数量是奇数, 数组的元素会被复制并重复。例如, `[5, 15, 25]` 会变成 `[5, 15, 25, 5, 15, 25]`。
+- `ctx.getLineDash()`: 返回当前线段样式的数组, 数组包含一组数量为偶数的非负数数字。如果没有调用 `setLineDash()` 默认为: `[]`。
+
+#### 1. lineWidth
+这个属性设置当前绘线的粗细。属性值必须为正数。默认值是 `1.0`。
+
+线宽是指给定路径的中心到两边的粗细。换句话说就是在路径的两边各绘制线宽的一半。因为 `canvas` 的坐标并不和像素直接对应，当需要获得精确的水平或垂直线的时候要特别注意。
+
+##### 例子:  
+```js
+// draw lines
+for (var i = 0; i < 10; i++) {
+    ctx.lineWidth = 1 + i;
+    ctx.beginPath();
+    const x = 5 + i * 14;
+    // const x = ctx.lineWidth % 2 > 0 ? 5 + i * 14 + .5 : 5 + i * 14;
+    ctx.moveTo(x, 5);
+    ctx.lineTo(x, 140);
+    ctx.stroke();
+}
+```
+
+> 源码传送门: [lineWidth.js](../test/lineWidth.js)
+
+##### 绘制顺序
+![lineWidth绘制顺序]() 
+
+可以看到, 最左边的以及所有宽度为奇数的线并不能精确呈现, 这就是因为路径的定位问题。可以尝试更换 `x` 轴坐标获取形式再看看结果。
+
+##### 2. lineCap
+该属性决定了线段端点显示的样子。
+
+`round` 选项, 在线段末端增加了一个半径为线短宽度一半的半圆。`square` 选项, 增加了一个宽度和线段相同, 高度是线段厚度一半的矩形区域。
+
+###### 例子:
+```js
+for (let i = 0; i < lineCap.length; i++) {
+    ctx.lineWidth = 15;
+    ctx.lineCap = lineCap[i];
+    ctx.beginPath();
+    ctx.moveTo(25 + i * 50, 10);
+    ctx.lineTo(25 + i * 50, 140);
+    ctx.stroke();
+}
+```
+
+> 源码传送门: [lineCap.js](../test/lineCap.js)
+
+###### 绘制顺序
+
+![lineCap绘制顺序]()
+
+##### 3. lineJoin
+该属性决定了图形中两线段连接处所显示的样子。
+
+- `round`: 通过填充一个额外的, 圆心在相连部分末端的扇形, 绘制拐角的形状。圆角的半径是线段的宽度。
+- `bevel`: 在相连部分的末端填充一个额外的以三角形为底的区域, 每个部分都有各自独立的矩形拐角。
+- `miter`: 通过延伸相连部分的外边缘, 使其相交于一点, 形成一个额外的菱形区域。这个设置可以通过 `miterLimit` 属性看到效果。
+
+###### 例子:
+```js
+const lineJoin = ['round', 'bevel', 'miter'];
+
+ctx.lineWidth = 10;
+for (var i = 0; i < lineJoin.length; i++) {
+    ctx.lineJoin = lineJoin[i];
+    ctx.beginPath();
+    ctx.moveTo(-5, 5 + i * 40);
+    ctx.lineTo(35, 45 + i * 40);
+    ctx.lineTo(75, 5 + i * 40);
+    ctx.lineTo(115, 45 + i * 40);
+    ctx.lineTo(155, 5 + i * 40);
+    ctx.stroke();
+}
+```
+
+> 源码传送门: [lineJoin](../test/lineJion.js)
+
+##### 4. miterLimit
+该属性是限制应用 `miter` 时的效果, 线段的外侧边缘会延伸交汇于一点上。线段直接夹角比较大的, 交点不会太远, 但当夹角减少时, 交点距离会呈指数级增大。
+
+`miterLimit` 属性就是用来设定外延交点与连接点的最大距离, 如果交点距离大于此值, 连接效果会变成了 `bevel`。
+
+#### 5. 虚线
+使用 `setLineDash` 方法和 `lineDashOffset` 属性来制定虚线样式。
+
+###### 例子:
+```js
+ctx.setLineDash([4, 2]);
+ctx.lineDashOffset = -Math.floor(Math.random() * 16);
+ctx.strokeRect(10, 10, 100, 100);
+```
+
+> 源码传送门: [drawDash.js](../test/drawDash.js)
+
+可以看到, 这里用了随机方法 `Math.random()`, 可以多次点击看看有什么不同。
+
+### 四. 渐变和图案
+
+> 📒快去记笔记!
+
+- `ctx.createLinearGradient(x0, y0, x1, y1)`: 创建一个沿参数坐标指定的直线的渐变。该方法返回一个线性 `CanvasGradient` 对象。
+- `ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);`: 根据参数确定两个圆的坐标，绘制径向(放射性)渐变的方法。这个方法返回一个径向(放射性) `CanvasGradient` 对象。
+- `ctx.createPattern(image, repetition)`: 使用指定的图像(`CanvasImageSource`)创建图案的方法。它通过 `repetition` 参数在指定的方向上重复元图像, 可选值为 `repeat`(both directions),`repeat-x` (horizontal only),`repeat-y` (vertical only), `no-repeat` (neither)。此方法返回一个 `CanvasPattern` 对象
+
+##### CanvasGradient 方法
+- `gradient.addColorStop(offset, color)`: 添加一个由**偏移值**(`offset`)和**颜色值**(`color`)指定的断点到渐变。如果偏移值不在 `0` 到 `1` 之间, 将抛出 `INDEX_SIZE_ERR` 错误, 如果颜色值不能被解析为有效的 `CSS` 颜色值, 将抛出 `SYNTAX_ERR` 错误。
+
+##### 线性渐变例子:
+创建的线性 `CanvasGradient` 对象, 可以赋值给 `fillStyle` 或者 `strokeStyle`。
+
+```js
+const lingrad = ctx.createLinearGradient(0, 0, 0, 150);
+lingrad.addColorStop(0, '#00ABEB');
+// lingrad.addColorStop(0.5, '#26C000');
+lingrad.addColorStop(1, '#fff');
+
+ctx.fillStyle = lingrad;
+ctx.strokeStyle = lingrad;
+
+// draw shapes
+ctx.fillRect(10, 10, 50, 50);
+ctx.strokeRect(40, 40, 50, 50);
+```
+
+> 源码传送门: [drawLinearGradient.js](../test/drawLinearGradient.js)
+
+##### 径向(放射性)渐变例子:
+创建的径向(放射性) `CanvasGradient` 对象, 可以赋值给 `fillStyle`。
+```js
+const radgrad = ctx.createRadialGradient(45, 45, 10, 52, 50, 30);
+radgrad.addColorStop(0, '#00C9FF');
+radgrad.addColorStop(0.8, '#00ABEB');
+radgrad.addColorStop(1, 'rgba(0, 201, 255, 0)');
+
+ctx.fillStyle = radgrad;
+ctx.fillRect(0, 0, 150, 150);
+```
+
+> 源码传送门: [drawRadialGradient.js](../test/drawRadialGradient.js)
+
+##### 绘制图案例子:
+```js
+const img = new Image();
+img.src = './images/canvas/Canvas_createpattern.png';
+img.onload = function () {
+    const pattern = ctx.createPattern(img, 'repeat');
+    ctx.fillStyle = pattern;
+    ctx.fillRect(0, 0, 400, 400);
+};
+```
+
+> 源码传送门: [drawPattern.js](../test/drawPattern.js)
+
+###  五. 阴影
+- `ctx.shadowBlur`: 描述模糊效果程度的 `float` 类型的值。默认值是 `0`。负数、`Infinity` 或者 `NaN` 都会被忽略。
+- `ctx.shadowColor`: 描述阴影颜色的属性。可以转换成 `CSS` 颜色值的 `DOMString` 字符串。默认值是 `#000`。
+- `ctx.shadowOffsetX`: 阴影水平方向的偏移量。默认 `0`。
+- `ctx.shadowOffsetY`: 阴影垂直方向的偏移量。默认 `0`。
+
+##### 例子:
+```js
+ctx.shadowColor = "rgba(0, 0, 0, .5)";
+ctx.shadowOffsetX = 10;
+ctx.shadowOffsetY = 10;
+ctx.shadowBlur = 10;
+
+ctx.fillStyle = "rgba(0, 171, 235, .8)";
+ctx.fillRect(10, 10, 100, 100);
+```
+
+> 源码传送门: [drawShadow.js](../test/drawShadow.js)
+
+### 六、文本
+#### 1. 绘制文本
+- `ctx.fillText(text, x, y [, maxWidth])`: 在 `(x, y)` 位置填充文本的方法。如果选项的第四个参数提供了最大宽度, 文本会进行缩放以适应最大宽度。
+- `ctx.strokeText(text, x, y [, maxWidth])`: 在给定的 `(x, y)` 位置绘制描边文本的方法。如果提供了表示最大值的第四个参数, 文本将会缩放适应宽度。
+- `ctx.measureText(text)`: 返回一个关于被测量文本 `TextMetrics` 对象包含的信息(例如它的宽度)。
+
+#### 2. 文本样式
+- `ctx.font`: 描述绘制文字时, 当前字体样式的属性。使用和 `CSS font` 规范相同的字符串值。默认字体是 `10px sans-serif`。
+- `ctx.textAlign`: 文本对齐设置。默认值为: `start`, 其他可选值: `end`, `left`, `right` 或 `center`。
+- `ctx.textBaseline`: 基线对齐设置。默认值为: `alphabetic`(文本基线是标准的字母基线), 其他可选值: `top`(文本基线在文本块的顶部), `hanging`(文本基线是悬挂基线), `middle`(文本基线在文本块的中间), `ideographic`(文字基线是表意字基线; 如果字符本身超出了 `alphabetic` 基线, 那么 `ideograhpic` 基线位置在字符本身的底部), `bottom`(文本基线在文本块的底部。与 `ideographic` 基线的区别在于 `ideographic` 基线不需要考虑下行字母。)。
+- `ctx.direction`: 文本的方向。默认值为: `inherit`, 其他可选值: `ltr`, `rtl`。
+
+##### 例子:
+```js
+ctx.font = '30px serif';
+ctx.textAlign = 'start';
+ctx.textBaseline = 'middle';
+ctx.direction = 'ltr';
+
+ctx.strokeText("Hello world!", 0, 100);
+```
+
+> 源码传送门: [drawFont.js](../test/drawFont.js)

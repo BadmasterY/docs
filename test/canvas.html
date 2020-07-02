@@ -11,35 +11,124 @@
     <canvas id="my-canvas" width="300" height="300" style="box-shadow: 0px 0px 7px #ddd; border-radius: 3px;">
         Your browser does not support canvas, please use modern browser!
     </canvas>
-    <div style="text-align: center;">
+    <div id="btn-box" style="text-align: center;">
         <button id="draw-house">house</button>
         <button id="draw-rect">rect</button>
         <button id="draw-triangle">triangle</button>
         <button id="draw-smiling-face">smiling face</button>
         <button id="draw-triangle-2">two triangle</button>
         <button id="draw-arc">arc</button>
+        <button id="path2d">path2d</button>
+        <button id="draw-svg">svg data</button>
+        <button id="use-fill-style">use fill style</button>
+        <button id="use-stroke-style">use stroke style</button>
+        <button id="use-global-alpha">use globalAlpha</button>
+        <button id="use-line-width">line width</button>
+        <button id="use-line-cap">line cap</button>
+        <button id="use-line-join">line jion</button>
+        <button id="draw-dash">dash</button>
+        <button id="draw-linear-gradient">linear gradient</button>
+        <button id="draw-radial-gradient">radial gradient</button>
+        <button id="draw-pattern">pattern</button>
+        <button id="draw-shadow">shadow</button>
+        <button id="draw-font">font</button>
     </div>
     <script src="./canvas.js"></script>
+    <script src="./canvasClear.js"></script>
     <script src="./drawRect.js"></script>
     <script src="./drawTriangle.js"></script>
     <script src="./drawSmilingFace.js"></script>
     <script src="./drawTriangle_2.js"></script>
     <script src="./drawArc.js"></script>
+    <script src="./path2d.js"></script>
+    <script src="./drawSVG.js"></script>
+    <script src="./fillStyle.js"></script>
+    <script src="./strokeStyle.js"></script>
+    <script src="./globalAlpha.js"></script>
+    <script src="./lineWidth.js"></script>
+    <script src="./lineCap.js"></script>
+    <script src="./lineJion.js"></script>
+    <script src="./drawDash.js"></script>
+    <script src="./drawLinearGradient.js"></script>
+    <script src="./drawRadialGradient.js"></script>
+    <script src="./drawPattern.js"></script>
+    <script src="./drawShadow.js"></script>
+    <script src="./drawFont.js"></script>
     <script>
         window.addEventListener('load', () => {
-            const houseBtn = document.getElementById('draw-house');
-            const rectBtn = document.getElementById('draw-rect');
-            const triangleBtn = document.getElementById('draw-triangle');
-            const smilingFaceBtn = document.getElementById('draw-smiling-face');
-            const twoTriangleBtn = document.getElementById('draw-triangle-2');
-            const arcBtn = document.getElementById('draw-arc');
+            const btnBox = document.getElementById('btn-box');
+            const canvas = document.getElementById('my-canvas');
+            if (!canvas.getContext) throw new Error('Your browser does not support canvas!');
+            const ctx = canvas.getContext('2d');
 
-            houseBtn.addEventListener('click', drawHouse, false);
-            rectBtn.addEventListener('click', drawRect, false);
-            triangleBtn.addEventListener('click', drawTriangle, false);
-            smilingFaceBtn.addEventListener('click', drawSmilingFace, false);
-            twoTriangleBtn.addEventListener('click', drawTriangle_2, false);
-            arcBtn.addEventListener('click', drawArc, false);
+            btnBox.addEventListener('click', ev => {
+                canvasClear(ctx, canvas);
+                switch (ev.target.id) {
+                    case 'draw-house':
+                        drawHouse(ctx);
+                        break;
+                    case 'draw-rect':
+                        drawRect(ctx);
+                        break;
+                    case 'draw-triangle':
+                        drawTriangle(ctx);
+                        break;
+                    case 'draw-smiling-face':
+                        drawSmilingFace(ctx);
+                        break;
+                    case 'draw-triangle-2':
+                        drawTriangle_2(ctx);
+                        break;
+                    case 'draw-arc':
+                        drawArc(ctx);
+                        break;
+                    case 'path2d':
+                        path2D(ctx);
+                        break;
+                    case 'draw-svg':
+                        drawSVG(ctx);
+                        break;
+                    case 'use-fill-style':
+                        useFillStyle(ctx);
+                        break;
+                    case 'use-stroke-style':
+                        useStrokeStyle(ctx);
+                        break;
+                    case 'use-global-alpha':
+                        useGlobalAlpha(ctx);
+                        break;
+                    case 'use-line-width':
+                        useLineWidh(ctx);
+                        break;
+                    case 'use-line-cap':
+                        useLineCap(ctx);
+                        break;
+                    case 'use-line-join':
+                        useLineJoin(ctx);
+                        break;
+                    case 'draw-dash':
+                        drawDash(ctx);
+                        break;
+                    case 'draw-linear-gradient':
+                        drawLinearGradient(ctx);
+                        break;
+                    case 'draw-radial-gradient':
+                        drawRadialGradient(ctx);
+                        break;
+                    case 'draw-pattern':
+                        drawPattern(ctx);
+                        break;
+                    case 'draw-shadow':
+                        drawShadow(ctx);
+                        break;
+                    case 'draw-font':
+                        drawFont(ctx);
+                        break;
+                    default:
+                        console.warn('sorry!', ev.target.id);
+                        break;
+                }
+            }, false);
         }, false);
     </script>
 </body>
