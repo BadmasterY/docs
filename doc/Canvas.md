@@ -403,7 +403,7 @@ if (canvas.getContext) {
 > 源码传送门: [drawArc.js](../test/drawArc.js)
 
 ##### 绘制顺序
-![一组圆弧顺序]()
+![一组圆弧顺序](../images/canvas/arc.gif)
 
 #### 4. Path2D
 `Path2D` 用来声明路径, 这是一个 `Canvas 2D API`, 生成的路径将由 `CanvasRenderingContext2D` 对象使用(就是上述例子中的 `ctx`)。`CanvasRenderingContext2D` 接口的**路径方法**也存在于 `Path2D` 这个接口中, 允许在 `canvas` 中根据需要创建可以保留并重用的路径。
@@ -412,7 +412,7 @@ if (canvas.getContext) {
 `Path2D()`:  
 可以通过 `new Path2D()` 的形式创建一个空的 `Path2D` 对象。
 
-参数:
+###### 参数:
 - `path`(可选): 当调用另一个 `Path2D` 对象时, 会创建一个 `path` 变量的拷贝。
 - `d`(可选): 当调用 `SVG path` 数据构成的字符串时, 会根据描述创建一个新的路径。
 
@@ -454,7 +454,7 @@ if (canvas.getContext) {
 > 源码传送门: [path2d.js](../test/path2d.js)
 
 ##### 绘制顺序:
-
+![path2d绘制顺序](../images/canvas/path2d.gif)
 
 ##### 使用 SVG path 绘制
 这是一段简单的代码片段, 使用 `SVG path data` 创建一个 `Path2D` 路径。路径将会移动到点 `(M10 10)`, 然后向右侧水平移动80个点 `(h 80)`, 然后向下80个点 `(v 80)`, 然后向左80个点 `(h -80)`, 最后回到起始点 `(z)`。
@@ -517,7 +517,7 @@ for (let i = 0; i < 6; i++) {
 ##### 绘制顺序
 > 这只是一个近似案例的模拟, 由于原 `demo` 绘制成 `gif` 过于复杂, 抱歉(就是懒, 来打我啊)。
 
-![fillStyle绘制顺序]()
+![fillStyle绘制顺序](../images/canvas/fillStyle.gif)
 
 #### 2. strokeStyle
 设置图形轮廓的颜色。
@@ -798,3 +798,124 @@ ctx.strokeText("Hello world!", 0, 100);
 ```
 
 > 源码传送门: [drawFont.js](../test/drawFont.js)
+
+### 七、绘制图像
+`canvas` 更有意思的一项特性就是图像操作能力。可以用于动态的图像合成或者作为图形的背景, 以及游戏界面(`Sprites`)等等。浏览器支持的任意格式的外部图片都可以使用, 比如 `PNG`、`GIF` 或者 `JPEG`。甚至可以将同一个页面中其他 `canvas` 元素生成的图片作为图片源。
+
+引入图像到 `canvas` 里需要以下两步基本操作:
+- 获得一个指向 `HTMLImageElement` 的对象或者另一个 `canvas` 元素的引用作为源, 也可以通过提供一个 `URL` 的方式来使用图片。
+- 使用 `ctx.drawImage()` 函数绘制图片。
+
+#### 1. 获取图像源
+可以通过以下几种方式获取图像源:
+- `CSSImageValue`: 例如 `background-image`, `list-style-image` 或者 `border-image-source`。`CSSImageValue` 对象表示一个包含 `URL` 的 `<image>`, 例如 `URL()` 或 `image()`, 但不包括 `linear-gradient()` 或 `element()`。
+- `HTMLImageElement`: 这些图片是由 `Image()` 函数构造出来的, 或者任意的 `<img>` 元素。
+- `SVGImageElement`: `SVGImageElement` 接口对应于 `<image>` 元素。
+- `HTMLVideoElement`: 用一个 `HTML` 的 `<video>` 元素作为图像源, 可以从视频中抓取当前帧作为一个图像。
+- `HTMLCanvasElement`: 使用另一个 `canvas` 作为图像源。
+- `ImageBitmap`: `ImageBitmap` 接口表示一个可以将其绘制到 `<canvas>` 上的位图图像, 具有低延迟特性。可以使用 [createImageBitmap()](https://developer.mozilla.org/zh-CN/docs/Web/API/ImageBitmapFactories/createImageBitmap) 工厂方法从各种源对象创建它。`ImageBitmap` 提供了一种异步且高资源利用率的形式来准备要在 `WebGL` 中渲染的纹理。
+- `OffscreenCanvas`: `OffscreenCanvas` 提供了一个可以脱离屏幕渲染的 `canvas` 对象。它在窗口环境和 `web worker` 环境均有效。
+
+##### CSSImageValue
+这是由 `JavaScript` 创建的 `<div>` 元素, 当然也可以通过获取页面的元素创建 `CSSImageValue`。
+
+###### 例子:
+```js
+const div = document.createElement('div');
+div.style.backgroundImage = 'url(./images/some.png)';
+div.style.minHeight = '100px';
+document.body.appendChild(div);
+
+// computed styles
+const allStylesMap = div.computedStyleMap();
+// get CSSImageValue
+console.log(allStylesMap.get('background-image'));
+// get 'url(./images/some.png)'
+console.log(allStylesMap.get('background-image').toString());
+```
+
+##### HTMLImageElement
+可以通过以下几种方式获取 `<img>` 元素:
+- `document.images`
+- `document.querySelectorAll('img')`
+- `new Image()`
+
+##### HTMLVideoElement
+使用 `<video>` 中的视频帧(即便视频是不可见的)。
+```js
+const video = document.getElementById('video');
+// draw image by video
+ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+```
+
+##### HTMLCanvasElement
+用 `document.getElementsByTagName`, `document.querySelector` 或 `document.getElementById` 方法来获取其它 `canvas` 元素。注意, 引入的应该是已经准备好的 `canvas`。
+
+一个常用的应用就是将第二个 `canvas` 作为另一个大的 `canvas` 的缩略图。
+
+##### ImageBitmap
+```js
+const img = document.getElementById('image');
+// return a promise
+const bitPromise = createImageBitmap(img);
+```
+
+#### 2. 绘制图像
+##### 语法
+```
+ctx.drawImage(image, dx, dy);
+ctx.drawImage(image, dx, dy, dWidth, dHeight);
+ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+```
+##### 参数
+`image`:  
+图像源。
+
+`sx`(可选):  
+需要绘制到目标上下文中的 `image` 的矩形(裁剪)选择框的左上角 `X` 轴坐标。
+
+`sy`(可选):  
+需要绘制到目标上下文中的 `image` 的矩形(裁剪)选择框的左上角 `Y` 轴坐标。
+
+`sWidth`(可选):  
+需要绘制到目标上下文中的 `image` 的矩形(裁剪)选择框的宽度。如果**不赋值**, 整个矩形(裁剪)从坐标的 `sx` 和 `sy` 开始, 到 `image` 的右下角结束。
+
+`sHeight`(可选):  
+需要绘制到目标上下文中的 `image` 的矩形(裁剪)选择框的高度。
+
+`dx`:  
+`image` 的左上角在目标 `canvas` 上 `X` 轴坐标。
+
+`dy`:  
+`image` 的左上角在目标 `canvas` 上 `Y` 轴坐标。
+
+`dWidth`(可选):  
+`image` 在目标 `canvas` 上绘制的宽度。允许对绘制的 `image` 进行缩放。如果**不赋值**, 在绘制时 `image` 宽度不会缩放。
+
+`dHeight`(可选):  
+`image` 在目标 `canvas` 上绘制的高度。允许对绘制的 `image` 进行缩放。如果**不赋值**, 在绘制时 `image` 高度不会缩放。
+
+![参数示意图](../images/canvas/drawimage.jpg)
+
+> 图片来自[MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/drawImage)
+
+##### 异常
+- `INDEX_SIZE_ERR`: 如果 `canvas` 或者图像矩形区域的宽度或高度为 `0`。
+- `INVALID_STATE_ERR`: 图像无数据。
+- `TYPE_MISMATCH_ERR`: 提供的原始元素不支持。
+- `NS_ERROR_NOT_AVAILABLE`: 图像尚未加载。使用 `.complete === true` 和 `.onload` 确定何时准备就绪。
+
+#### 3. 例子
+这个例子通过创建 `<img>`(`HTMLImageElement`) 并通过 `.onload` 来实现, 其他几种形式大同小异, 可以自行尝试。
+
+```js
+const img_1 = new Image();
+img_1.onload = ev => {
+    ctx.drawImage(img_1, 0, 0, 100, 100);
+};
+img_1.src = './images/canvas/drawimage_1.jpeg';
+```
+
+![drawImages](../images/canvas/drawimage.png)
+
+> 源码传送门: [drawImages](../test/drawImages.js)
