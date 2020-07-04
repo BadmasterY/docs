@@ -33,6 +33,13 @@
         <button id="draw-shadow">shadow</button>
         <button id="draw-font">font</button>
         <button id="draw-images">images</button>
+        <button id="use-state">state</button>
+        <button id="use-translate">translate</button>
+        <button id="use-rotate">rotate</button>
+        <button id="use-scale">scale</button>
+        <button id="use-transform">transform</button>
+        <button id="use-clip">clip</button>
+        <button id="use-global-composite-operation">global composite operation</button>
     </div>
     <script src="./canvas.js"></script>
     <script src="./canvasClear.js"></script>
@@ -56,6 +63,13 @@
     <script src="./drawShadow.js"></script>
     <script src="./drawFont.js"></script>
     <script src="./drawImages.js"></script>
+    <script src="./useState.js"></script>
+    <script src="./useTranslate.js"></script>
+    <script src="./useRotate.js"></script>
+    <script src="./useScale.js"></script>
+    <script src="./useTransform.js"></script>
+    <script src="./useClip.js"></script>
+    <script src="./useGlobalCompositeOperation.js"></script>
     <script>
         window.addEventListener('load', () => {
             const btnBox = document.getElementById('btn-box');
@@ -128,6 +142,27 @@
                         break;
                     case 'draw-images':
                         drawImages(ctx);
+                        break;
+                    case 'use-state':
+                        useState(ctx);
+                        break;
+                    case 'use-translate':
+                        useTranslate(ctx);
+                        break;
+                    case 'use-rotate':
+                        useRotate(ctx);
+                        break;
+                    case 'use-scale':
+                        useScale(ctx);
+                        break;
+                    case 'use-transform':
+                        useTransform(ctx);
+                        break;
+                    case 'use-global-composite-operation':
+                        useGlobalCompositeOperation(ctx);
+                        break;
+                    case 'use-clip':
+                        useClip(ctx);
                         break;
                     default:
                         console.warn('sorry!', ev.target.id);

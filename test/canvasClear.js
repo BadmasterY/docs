@@ -1,4 +1,5 @@
 function canvasClear(ctx, canvas) {
+    ctx.restore();
     // clear
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // init
@@ -19,4 +20,9 @@ function canvasClear(ctx, canvas) {
     ctx.textAlign = 'start';
     ctx.textBaseline = 'alphabetic';
     ctx.direction = 'inherit';
+    ctx.globalCompositeOperation = 'source-over';
+
+    ctx.resetTransform();
+    
+    ctx.save();
 }
