@@ -3,7 +3,7 @@ function useGlobalAlpha(ctx) {
     ctx.fillRect(25, 25, 100, 100);
 
     ctx.globalAlpha = .5;
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#f40';
 
     ctx.fillRect(50, 50, 30, 30);
 };

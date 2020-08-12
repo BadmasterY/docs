@@ -557,7 +557,7 @@ for (let i = 0; i < 6; i++) {
 > 源码传送门: [strokeStyle.js](../test/strokeStyle.js)
 
 ##### 绘制顺序
-![strokeStyle绘制顺序]()
+![strokeStyle绘制顺序](../images/canvas/strokeStyle.gif)
 
 #### 3. 透明度
 除了可以绘制实色图形, 还可以用 `canvas` 来绘制半透明的图形。通过设置 `globalAlpha` 属性或者使用一个半透明颜色作为轮廓或填充的样式(`rgba(0, 0, 0, 0.1)`)。
@@ -579,7 +579,7 @@ ctx.globalAlpha = value;
 ctx.fillRect(25, 25, 100, 100);
 
 ctx.globalAlpha = .5;
-ctx.fillStyle = '#fff';
+ctx.fillStyle = '#f40';
 
 ctx.fillRect(50, 50, 30, 30);
 ```
@@ -587,7 +587,7 @@ ctx.fillRect(50, 50, 30, 30);
 > 源码传送门: [globalAlpha.js](../test/globalAlpha.js)
 
 ##### 绘制顺序
-![globalAlpha绘制顺序]()
+![globalAlpha绘制顺序](../images/canvas/globalAlpha.gif)
 
 ### 三. 线型
 `canvas` 提供了一些方法和属性控制如何绘制线。
@@ -627,7 +627,7 @@ for (var i = 0; i < 10; i++) {
 > 源码传送门: [lineWidth.js](../test/lineWidth.js)
 
 ##### 绘制顺序
-![lineWidth绘制顺序]() 
+![lineWidth绘制顺序](../images/canvas/lineWidth.gif) 
 
 可以看到, 最左边的以及所有宽度为奇数的线并不能精确呈现, 这就是因为路径的定位问题。可以尝试更换 `x` 轴坐标获取形式再看看结果。
 
@@ -652,7 +652,7 @@ for (let i = 0; i < lineCap.length; i++) {
 
 ###### 绘制顺序
 
-![lineCap绘制顺序]()
+![lineCap绘制顺序](../images/canvas/lineCap.gif)
 
 ##### 3. lineJoin
 该属性决定了图形中两线段连接处所显示的样子。
@@ -987,7 +987,7 @@ ctx.fillRect(0, 0, 50, 50);
 > 源码传送门: [useTranslate.js](../test/useTranslate.js)
 
 ##### 绘制顺序
-![translate绘制顺序]()
+![translate绘制顺序](../images/canvas/translate.gif)
 
 #### 2. rotate
 在变换矩阵中增加旋转的方法。角度变量表示一个顺时针旋转角度并且用弧度表示。
@@ -1012,7 +1012,7 @@ ctx.fillRect(50, 20, 100, 20);
 > 源码传送门: [useRotate.js](../test/useRotate.js)
 
 ##### 绘制顺序
-![rotate绘制顺序]()
+![rotate绘制顺序](../images/canvas/rotate.gif)
 
 #### 3. scale
 根据 `x` 水平方向和 `y` 垂直方向, 为 `canvas` 单位添加缩放变换的方法。
@@ -1049,7 +1049,7 @@ ctx.fillText('Hello world!', -135, 120);
 > 源码传送门: [useScale.js](../test/useScale.js)
 
 ##### 绘制顺序
-![scale绘制顺序]()
+![scale绘制顺序](../images/canvas/scale.gif)
 
 #### 4. transform
 使用矩阵多次叠加当前变换的方法, 矩阵由方法的参数进行描述。可以缩放、旋转、移动和倾斜上下文。
@@ -1095,9 +1095,6 @@ ctx.fillRect(0, 0, 100, 100);
 
 > 源码传送门: [useTransform.js](../test/useTransform.js)
 
-##### 绘制顺序
-![transform绘制顺序]()
-
 ### 十、裁剪与合成
 #### 1. 裁剪
 裁剪使用 `clip()` 函数, 属于绘制方法, 因为比较特殊, 单独进行理解。
@@ -1126,7 +1123,7 @@ ctx.fillRect(0, 0, 100, 100);
 > 源码传送门: [useClip.js](../test/useClip.js)
 
 ##### 绘制顺序
-![clip绘制顺序]()
+![clip绘制顺序](../images/canvas/clip.gif)
 
 #### 2. 合成
 使用 `ctx.globalCompositeOperation = type` 属性进行合成, 设置要在绘制新形状时应用的合成操作的类型, 其中 `type` 是用于标识要使用的合成或混合模式操作的字符串。
