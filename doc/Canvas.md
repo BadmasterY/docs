@@ -1175,4 +1175,12 @@ ctx.fillStyle = "red";
 ctx.fillRect(160, 30, 50, 50);
 ```
 
-> 源码传送门: [useGlobalCompositeOperation.js](../test/useGlobalCompositeOperation.js)
+> 源码传送门: [useGlobalCompositeOperation.js](../test/useGlobalCompositeOperation.js)  
+> 声明: 绝大部分 `demo` 源码都来自 [developer](https://developer.mozilla.org/)
+
+## 参考文献
+- [Wiki](https://zh.wikipedia.org/wiki/Canvas_(HTML%E5%85%83%E7%B4%A0))
+- [developer](https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D)
+- [Canvas 教程](https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial)
+- [w3school](https://www.w3school.com.cn/html5/tag_canvas.asp)
+- [runoob](https://www.runoob.com/html/html5-canvas.html)
